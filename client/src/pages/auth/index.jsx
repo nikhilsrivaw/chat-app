@@ -4,6 +4,9 @@ import Victory from '../../assets/victory.svg';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { apiClient } from '@/lib/api-client';
+import { SIGNUP_ROUTE } from '@/utils/constants';
 
 
 
@@ -13,12 +16,39 @@ const Auth = () => {
   const [password, setpassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
 
+  const validateSignup = () => {
+
+    if (!email.length) {
+      toast.error("email is required");
+      return false;
+    }
+    if (!password.length) {
+      toast.error("Password  is required");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Password and confirm Password should be same");
+      return false;
+    }
+
+    return true;
+  }
 
 
-  const handleLogin = async()=>{
+
+  const handleLogin = async () => {
 
   };
-  const handleSignup = async()=>{};
+  const handleSignup = async () => {
+    if (validateSignup()) {
+      const response = await apiClient.post(
+        SIGNUP_ROUTE,
+        {email,password},
+        {withCredentials:true}
+      );
+      console.log({response});
+    }
+};
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center ">
@@ -41,15 +71,15 @@ const Auth = () => {
               <TabsContent className="flex flex-col gap-5 mt-10" value="login">
                 <Input placeholder="Email" type="email" className="rounded-full p-6" value={email} onChange={(e) => setemail(e.target.value)} />
                 <Input placeholder="password" type="password" className="rounded-full p-6" value={password} onChange={(e) => setpassword(e.target.value)} />
-                <Button className= "rounded-full p-6 " onClick={handleLogin}>Login</Button>
-                
+                <Button className="rounded-full p-6 " onClick={handleLogin}>Login</Button>
+
 
               </TabsContent>
               <TabsContent className="flex flex-col gap-5 mt-10" value="signup">
                 <Input placeholder="Email" type="email" className="rounded-full p-6" value={email} onChange={(e) => setemail(e.target.value)} />
                 <Input placeholder="password" type="password" className="rounded-full p-6" value={password} onChange={(e) => setpassword(e.target.value)} />
                 <Input placeholder="confirmPassword" type="confirmPassword" className="rounded-full p-6" value={confirmPassword} onChange={(e) => setconfirmPassword(e.target.value)} />
-                <Button className= "rounded-full p-6 " onClick={handleSignup}>Signup</Button>
+                <Button className="rounded-full p-6 " onClick={handleSignup}>Signup</Button>
 
 
               </TabsContent>
@@ -57,7 +87,7 @@ const Auth = () => {
           </div>
         </div>
         <div className=" hidden xl:flex justify-center ietms-center">
-          <img src={Background} alt="background login" className = "h-[600px]" />
+          <img src={Background} alt="background login" className="h-[600px]" />
         </div>
       </div>
 
